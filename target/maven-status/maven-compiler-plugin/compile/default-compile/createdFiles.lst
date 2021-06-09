@@ -1,0 +1,12 @@
+com\acarasiov\vmsoft\exception\NoMoneyException.class
+com\acarasiov\vmsoft\exception\NoItemIdException.class
+com\acarasiov\vmsoft\exception\NoItemException.class
+com\acarasiov\vmsoft\model\Config.class
+com\acarasiov\vmsoft\service\VendingMachineServiceImpl.class
+com\acarasiov\vmsoft\dao\VendingMachineDao.class
+com\acarasiov\vmsoft\dao\VendingMachineDaoInMemImpl.class
+com\acarasiov\vmsoft\model\Change.class
+com\acarasiov\vmsoft\model\Configuration.class
+com\acarasiov\vmsoft\service\VendingMachineService.class
+com\acarasiov\vmsoft\controller\VendingMachineController.class
+com\acarasiov\vmsoft\model\Item.class
