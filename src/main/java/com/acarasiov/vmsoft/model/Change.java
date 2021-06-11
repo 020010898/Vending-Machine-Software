@@ -3,6 +3,7 @@ package com.acarasiov.vmsoft.model;
 import java.math.BigDecimal;
 
 public class Change {
+
     private int quarterCounter;
     private int dimeCounter;
     private int nickelCounter;
@@ -20,7 +21,7 @@ public class Change {
 
         BigDecimal changeBack = balance.multiply(cons);
 
-        if(changeBack.compareTo(nothing) >= 0){
+        if (changeBack.compareTo(nothing) >= 0) {
             while (changeBack.compareTo(quarter) >= 0) {
                 changeBack = changeBack.subtract(quarter);
                 quarterCounter++;

@@ -1,10 +1,12 @@
 package com.acarasiov.vmsoft.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//@JsonAutoDetect
 public class Item {
 
     public Configuration config;
@@ -67,7 +69,7 @@ public class Item {
                     '}';
         } else {
             return "Item{\n" +
-                    ", name='" + name + '\'' +
+                    "name='" + name + '\'' +
                     ", amount=" + amount +
                     ", price='" + price + '\'' + "\n" +
                     '}';

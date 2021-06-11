@@ -1,6 +1,10 @@
 package com.acarasiov.vmsoft.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
+//@JsonAutoDetect
 public class Configuration {
+
     public static int rows;
 
     public static String columns;
@@ -13,9 +17,10 @@ public class Configuration {
         this.columns = columns;
     }
 
-    public static int intColumn(){
+    public static int intColumn() {
         return Integer.parseInt(columns);
     }
+
     public static int getRows() {
         return rows;
     }

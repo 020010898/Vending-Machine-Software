@@ -1,25 +1,35 @@
 package com.acarasiov.vmsoft.service;
 
 import com.acarasiov.vmsoft.dao.VendingMachineDao;
+import com.acarasiov.vmsoft.dao.VendingMachineDaoInMemImpl;
 import com.acarasiov.vmsoft.exception.NoItemException;
 import com.acarasiov.vmsoft.exception.NoItemIdException;
 import com.acarasiov.vmsoft.exception.NoMoneyException;
 import com.acarasiov.vmsoft.model.Change;
 import com.acarasiov.vmsoft.model.Item;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Component
 public class VendingMachineServiceImpl implements VendingMachineService {
+
     VendingMachineDao dao;
     private BigDecimal balance;
     private int itemChoice;
     private Change change;
     private String textMessage;
 
-    @Inject
+//    public VendingMachineServiceImpl() throws IOException {
+//        dao = new VendingMachineDaoInMemImpl();
+//    }
+
+    @Autowired
     public VendingMachineServiceImpl(VendingMachineDao dao) {
         this.dao = dao;
         balance = new BigDecimal("0.00");
@@ -43,7 +53,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     private void validateId(Item item) throws NoItemIdException {
-        if(item == null || itemChoice == 0 ){
+        if (item == null || itemChoice == 0) {
             throw new NoItemIdException("No such item");
         }
     }
@@ -73,7 +83,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public Item getItemById(int itemId) throws FileNotFoundException, NoItemException{
+    public Item getItemById(int itemId) throws FileNotFoundException, NoItemException {
         validateItemAmount(dao.getItemById(itemId));
         return dao.getItemById(itemId);
 
@@ -81,51 +91,69 @@ public class VendingMachineServiceImpl implements VendingMachineService {
 
     @Override
     public void addMoney(String amount) {
-
+        switch (amount) {
+            case "dollar":
+                balance = balance.add(new BigDecimal("1.00"));
+                break;
+            case "quarter":
+                balance = balance.add(new BigDecimal("0.25"));
+                break;
+            case "dime":
+                balance = balance.add(new BigDecimal("0.10"));
+                break;
+            case "nickel":
+                balance = balance.add(new BigDecimal("0.05"));
+                break;
+            default:
+        }
     }
 
     @Override
     public BigDecimal getBalance() {
-        return null;
+        return balance;
     }
 
     @Override
     public void returnChange() {
-
+        Change theirChange = new Change(balance);
+        change = theirChange;
+        balance = new BigDecimal("0.00");
+        itemChoice = 0;
+        textMessage = null;
     }
 
     @Override
     public String getTextMessage() {
-        return null;
+        return textMessage;
     }
 
     @Override
     public Change getChange() {
-        return null;
+        return change;
     }
 
     @Override
     public int getItemChoice() {
-        return 0;
+        return itemChoice;
     }
 
     @Override
     public void setBalance(BigDecimal balance) {
-
+        this.balance = balance;
     }
 
     @Override
     public void setTextMessage(String textMessage) {
-
+        this.textMessage = textMessage;
     }
 
     @Override
     public void setChange(Change change) {
-
+        this.change = change;
     }
 
     @Override
     public void setItemChoice(int itemChoice) {
-
+        this.itemChoice = itemChoice;
     }
 }

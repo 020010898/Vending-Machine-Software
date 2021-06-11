@@ -2,14 +2,16 @@ package com.acarasiov.vmsoft.dao;
 
 import com.acarasiov.vmsoft.model.Item;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class VendingMachineDaoInMemImpl implements VendingMachineDao {
-    List<Item> items ;
+
+    static List<Item> items;
 
     public VendingMachineDaoInMemImpl() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -27,15 +29,15 @@ public class VendingMachineDaoInMemImpl implements VendingMachineDao {
 
     @Override
     public List<Item> getAllItems() {
-        return new ArrayList<>(items);
+        return items;
     }
 
     @Override
     public Item getItemById(int itemId) {
-        if(itemId<=0){
+        if (itemId <= 0) {
             return null;
         }
-        itemId--;
+        itemId = itemId - 1;
         return items.get(itemId);
     }
 }

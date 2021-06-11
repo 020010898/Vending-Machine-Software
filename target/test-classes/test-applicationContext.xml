@@ -17,9 +17,9 @@
     <!-- Bean definitions go here -->
     
      <bean id="vendingMachineDao"
-      class="com.sg.vendingmachinespringmvc.dao.VendingMachineDaoInMemImpl"/>
+      class="com.acarasiov.vmsoft.dao.VendingMachineDaoInMemImpl"/>
      <bean id="vendingMachineServiceLayer"
-      class="com.sg.vendingmachinespringmvc.service.VendingMachineServiceLayerImpl">
+      class="com.acarasiov.vmsoft.service.VendingMachineServiceImpl">
          <constructor-arg ref="vendingMachineDao" />
      </bean>
 </beans>
