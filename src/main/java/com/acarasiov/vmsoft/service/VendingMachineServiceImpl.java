@@ -1,22 +1,19 @@
 package com.acarasiov.vmsoft.service;
 
 import com.acarasiov.vmsoft.dao.VendingMachineDao;
-import com.acarasiov.vmsoft.dao.VendingMachineDaoInMemImpl;
 import com.acarasiov.vmsoft.exception.NoItemException;
 import com.acarasiov.vmsoft.exception.NoItemIdException;
 import com.acarasiov.vmsoft.exception.NoMoneyException;
 import com.acarasiov.vmsoft.model.Change;
 import com.acarasiov.vmsoft.model.Item;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Component
+
 public class VendingMachineServiceImpl implements VendingMachineService {
 
     VendingMachineDao dao;
@@ -25,46 +22,45 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     private Change change;
     private String textMessage;
 
-//    public VendingMachineServiceImpl() throws IOException {
-//        dao = new VendingMachineDaoInMemImpl();
-//    }
-
-    @Autowired
-    public VendingMachineServiceImpl(VendingMachineDao dao) {
+    @Inject
+    public VendingMachineServiceImpl(VendingMachineDao dao){
         this.dao = dao;
-        balance = new BigDecimal("0.00");
+        balance = new BigDecimal ("0.00");
         itemChoice = 0;
         change = null;
         textMessage = null;
     }
 
-    private void validateItemAmount(Item item) throws NoItemException {
-        if (item.getAmount() == 0) {
-            throw new NoItemException("SOLD OUT!");
+    private void validateItemInventory(Item item) throws NoItemException{
+        if(item.getAmount() == 0){
+
+            throw new NoItemException("SOLD OUT!!!");
+
         }
     }
 
-    private void validateSufficientFunds(Item item, BigDecimal userMoneySelection) throws NoMoneyException {
+    private void validateSufficientFunds(Item item, BigDecimal userMoneySelection) throws NoMoneyException{
         BigDecimal value = item.getItemPrice();
-        if (value.compareTo(userMoneySelection) > 0) {
+        if(value.compareTo(userMoneySelection) > 0 ){
             BigDecimal whatTheyOwe = value.subtract(balance);
             throw new NoMoneyException("Please deposit : $" + whatTheyOwe);
+
         }
     }
 
-    private void validateId(Item item) throws NoItemIdException {
-        if (item == null || itemChoice == 0) {
-            throw new NoItemIdException("No such item");
+    private void validateId(Item item) throws NoItemIdException{
+        if(item == null || itemChoice == 0 || item.getItemId() == 0){
+            throw new NoItemIdException("No such item.");
         }
     }
 
     @Override
-    public void vendItem() {
+    public void vendItem(){
         try {
             Item item = dao.getItemById(itemChoice);
             validateId(item);
             BigDecimal cost = item.getItemPrice();
-            validateItemAmount(item);
+            validateItemInventory(item);
             validateSufficientFunds(item, balance);
             BigDecimal changeReturned = balance.subtract(cost);
             Change daChangeReturned = new Change(changeReturned);
@@ -75,6 +71,8 @@ public class VendingMachineServiceImpl implements VendingMachineService {
         } catch (NoItemException | NoMoneyException | NoItemIdException ex) {
             textMessage = ex.getMessage();
         }
+
+
     }
 
     @Override
@@ -84,24 +82,24 @@ public class VendingMachineServiceImpl implements VendingMachineService {
 
     @Override
     public Item getItemById(int itemId) throws FileNotFoundException, NoItemException {
-        validateItemAmount(dao.getItemById(itemId));
-        return dao.getItemById(itemId);
-
+        Item item = dao.getItemById(itemId);
+        validateItemInventory(item);
+        return dao.getItemById(item.getItemId());
     }
 
     @Override
-    public void addMoney(String amount) {
+    public void addMoney(String amount) { //created a swtich statement to determine the new value of balance dependent upon which button the user is pressing
         switch (amount) {
-            case "dollar":
+            case "dollar": //these are the corresponding names to the buttons found in the jsp
                 balance = balance.add(new BigDecimal("1.00"));
                 break;
-            case "quarter":
+            case "quarter": //they use the URL Mapping to determine what the URL is depending on the name of the button
                 balance = balance.add(new BigDecimal("0.25"));
                 break;
-            case "dime":
+            case "dime": //you can find these in the jsp
                 balance = balance.add(new BigDecimal("0.10"));
                 break;
-            case "nickel":
+            case "nickel": //addmoney/nickel
                 balance = balance.add(new BigDecimal("0.05"));
                 break;
             default:
@@ -114,22 +112,8 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public void returnChange() {
-        Change theirChange = new Change(balance);
-        change = theirChange;
-        balance = new BigDecimal("0.00");
-        itemChoice = 0;
-        textMessage = null;
-    }
-
-    @Override
-    public String getTextMessage() {
-        return textMessage;
-    }
-
-    @Override
-    public Change getChange() {
-        return change;
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     @Override
@@ -138,13 +122,13 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setItemChoice(int itemChoice) {
+        this.itemChoice = itemChoice;
     }
 
     @Override
-    public void setTextMessage(String textMessage) {
-        this.textMessage = textMessage;
+    public Change getChange() {
+        return change;
     }
 
     @Override
@@ -153,7 +137,23 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public void setItemChoice(int itemChoice) {
-        this.itemChoice = itemChoice;
+    public String getTextMessage() {
+        return textMessage;
     }
+
+    @Override
+    public void setTextMessage(String textMessage) {
+        this.textMessage = textMessage;
+    }
+
+    @Override
+    public void returnChange() { //resetting all values to nothing once change is returned
+        Change theirChange = new Change(balance);
+        change = theirChange;
+        balance = new BigDecimal("0.00");
+        itemChoice = 0;
+        textMessage = null;
+
+    }
+
 }

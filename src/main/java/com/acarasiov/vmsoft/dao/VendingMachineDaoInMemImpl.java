@@ -2,21 +2,28 @@ package com.acarasiov.vmsoft.dao;
 
 import com.acarasiov.vmsoft.model.Item;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
+
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+
 public class VendingMachineDaoInMemImpl implements VendingMachineDao {
 
-    static List<Item> items;
+    Map<Integer, Item> items;
 
     public VendingMachineDaoInMemImpl() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        Item item = mapper.readValue(new File("D:\\projects\\Test\\src\\input.json"), Item.class);
-        items = item.getItems();
+        Item item = mapper.readValue(new File("D:\\projects\\input.json"), Item.class);
+        items = new HashMap<>();
+        for (int i = 0; i < item.getItems().size(); i++) {
+            item.getItems().get(i).setItemId(i);
+            items.put(item.getItems().get(i).getItemId(), item.getItems().get(i));
+        }
 
     }
 
@@ -29,15 +36,11 @@ public class VendingMachineDaoInMemImpl implements VendingMachineDao {
 
     @Override
     public List<Item> getAllItems() {
-        return items;
+        return new ArrayList<Item>(items.values());
     }
 
     @Override
     public Item getItemById(int itemId) {
-        if (itemId <= 0) {
-            return null;
-        }
-        itemId = itemId - 1;
         return items.get(itemId);
     }
 }

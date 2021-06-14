@@ -1,5 +1,6 @@
 package com.acarasiov.vmsoft;
 
+
 import com.acarasiov.vmsoft.dao.VendingMachineDao;
 import com.acarasiov.vmsoft.dao.VendingMachineDaoInMemImpl;
 import com.acarasiov.vmsoft.model.Change;
@@ -16,6 +17,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+
 public class VendingMachineServiceImplTest {
     VendingMachineDaoInMemImpl dao;
     VendingMachineService service;
@@ -25,13 +27,11 @@ public class VendingMachineServiceImplTest {
     private String textMessage;
 
     public VendingMachineServiceImplTest() {
-        this.dao = dao;
-        balance = new BigDecimal ("0.00");
+        this.dao = null;
+        balance = new BigDecimal("0.00");
         itemChoice = 0;
         change = null;
         textMessage = null;
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("test-applicationContext.xml");
-        service = ctx.getBean("vendingMachineService", VendingMachineService.class);
     }
 
     @BeforeClass
@@ -62,7 +62,7 @@ public class VendingMachineServiceImplTest {
     @Test
     public void testGetItemById() throws IOException {
         VendingMachineDao something = new VendingMachineDaoInMemImpl();
-        Item currentItem = something.getItemById(2);
+        Item currentItem = something.getItemById(1);
         assertTrue(currentItem != null);
     }
 }

@@ -2,7 +2,7 @@ package com.acarasiov.vmsoft.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-//@JsonAutoDetect
+@JsonAutoDetect
 public class Configuration {
 
     public static int rows;

@@ -19,17 +19,22 @@ public class Change {
         BigDecimal nickel = new BigDecimal("5");
         BigDecimal penny = new BigDecimal("1");
 
+
         BigDecimal changeBack = balance.multiply(cons);
 
+
         if (changeBack.compareTo(nothing) >= 0) {
+
             while (changeBack.compareTo(quarter) >= 0) {
                 changeBack = changeBack.subtract(quarter);
                 quarterCounter++;
             }
+
             while (changeBack.compareTo(dime) >= 0) {
                 changeBack = changeBack.subtract(dime);
                 dimeCounter++;
             }
+
             while (changeBack.compareTo(nickel) >= 0) {
                 changeBack = changeBack.subtract(nickel);
                 nickelCounter++;

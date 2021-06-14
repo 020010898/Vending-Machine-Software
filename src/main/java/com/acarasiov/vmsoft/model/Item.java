@@ -1,31 +1,41 @@
 package com.acarasiov.vmsoft.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-//@JsonAutoDetect
+@JsonAutoDetect
 public class Item {
 
     public Configuration config;
-    public String name;
-    public int amount;
-    public String price;
-    public List<Item> items = new ArrayList<Item>();
+    private int itemId;
+    private String name;
+    private BigDecimal itemPrice;
+    private String price;
+    private int amount;
+    private List<Item> items;
+
+    public Item(int itemId, String name, BigDecimal price, int amount) {
+        this.itemId = itemId;
+        this.name = name;
+        this.itemPrice = price;
+        this.amount = amount;
+    }
 
     public Item() {
     }
 
-    public Item(String name, int amount, String price) {
-        this.name = name;
-        this.amount = amount;
-        this.price = price;
+
+    @JsonIgnore
+    public int getItemId() {
+        return itemId;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
     public String getName() {
@@ -36,6 +46,23 @@ public class Item {
         this.name = name;
     }
 
+    public BigDecimal getItemPrice() {
+        return new BigDecimal(getPrice());
+    }
+
+    public void setItemPrice(BigDecimal price) {
+        setPrice(price.toString());
+        this.itemPrice = new BigDecimal(this.price);
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price.substring(1);
+    }
+
     public int getAmount() {
         return amount;
     }
@@ -44,35 +71,48 @@ public class Item {
         this.amount = amount;
     }
 
-    public String getPrice() {
-        return price;
-    }
-
-    public BigDecimal getItemPrice() {
-        String itemPrice = price.substring(1);
-        return new BigDecimal(itemPrice);
-    }
-
-    public void setItemPrice(BigDecimal bigDecimal) {
-        setPrice(bigDecimal.toString());
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + this.itemId;
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.price);
+        hash = 53 * hash + this.amount;
+        return hash;
     }
 
     @Override
-    public String toString() {
-        if (config != null) {
-            return config + "\n" +
-                    " items=" + items +
-                    '}';
-        } else {
-            return "Item{\n" +
-                    "name='" + name + '\'' +
-                    ", amount=" + amount +
-                    ", price='" + price + '\'' + "\n" +
-                    '}';
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Item other = (Item) obj;
+        if (this.itemId != other.itemId) {
+            return false;
+        }
+        if (this.amount != other.amount) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.price, other.price)) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }
